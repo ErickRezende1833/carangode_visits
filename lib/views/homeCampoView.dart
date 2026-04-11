@@ -13,7 +13,8 @@ class _HomeCampoViewState extends State<HomeCampoView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home Campo'),
+        title: const Text('LOGO'),
+        backgroundColor: Colors.white,
         centerTitle: true,
       ),
       body: SingleChildScrollView(
