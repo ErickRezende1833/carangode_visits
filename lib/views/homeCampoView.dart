@@ -23,7 +23,7 @@ class _HomeCampoViewState extends State<HomeCampoView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              
+              Text("Cadastros:", style: const TextStyle(fontSize: 20),)
 
             ],
           ),
