@@ -38,3 +38,29 @@ class CustomBottomNavigationBar extends StatelessWidget {
     );
   }
 }
+
+
+//botão com icon e label
+
+class CustomElevatedButton extends StatelessWidget {
+  const CustomElevatedButton({
+    super.key,
+    required this.onPressed,
+    required this.icon,
+    required this.label,
+  });
+
+  final VoidCallback onPressed;
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: onPressed,
+      icon: Icon(icon, size: 18),
+      label: Text(label),
+      style: ElevatedButton.styleFrom(fixedSize: const Size.fromHeight(48)),
+    );
+  }
+}
