@@ -64,3 +64,76 @@ class CustomElevatedButton extends StatelessWidget {
     );
   }
 }
+
+//campo de texto
+
+class CustomTextField extends StatelessWidget {
+  const CustomTextField({
+    super.key,
+    required this.labelText,
+    required this.hintText,
+    this.controller,
+    this.validator,
+  });
+
+  final String labelText;
+  final String hintText;
+  final TextEditingController? controller;
+  final String? Function(String?)? validator;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      validator: validator,
+      decoration: InputDecoration(
+        labelText: labelText,
+        hintText: hintText,
+      ),
+    );
+  }
+}
+
+//campo de texto com ícone
+
+class CustomIconTextField extends StatelessWidget {
+  const CustomIconTextField({
+    super.key,
+    required this.labelText,
+    required this.hintText,
+    this.controller,
+    this.validator,
+    this.prefixIcon,
+  });
+
+  final String labelText;
+  final String hintText;
+  final TextEditingController? controller;
+  final String? Function(String?)? validator;
+  final IconData? prefixIcon;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      validator: validator,
+      decoration: InputDecoration(
+        labelText: labelText,
+        hintText: hintText,
+        prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
+        border: const OutlineInputBorder(),
+
+
+        errorStyle: const TextStyle(
+        color: Colors.red,
+        fontWeight: FontWeight.bold,
+        ),
+
+        errorBorder: const OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.red, width: 1),
+      ),
+
+      ),
+    );
+  }
+}

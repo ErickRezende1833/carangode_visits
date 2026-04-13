@@ -1,6 +1,8 @@
+import 'package:carangode_visits_app/views/formView.dart';
 import 'package:flutter/material.dart';
 // 1. Importe o seu arquivo (ajuste o caminho se necessário)
 import 'views/homeCampoView.dart'; 
+import 'views/widgets.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +20,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       
-      home: const HomeCampoView(), 
+      home: FormView(), 
     );
   }
 }
