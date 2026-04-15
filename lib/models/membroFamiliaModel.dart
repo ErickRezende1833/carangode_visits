@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-/// Representa cada membro da família que reside na habitação
 class MembroFamiliar {
   final String nome;
   final int idade;
@@ -12,7 +11,7 @@ class MembroFamiliar {
     required this.parentesco,
   });
 
-  // Converte um objeto em Map para salvar no banco ou JSON
+  // Converte um objeto em Map
   Map<String, dynamic> toMap() {
     return {
       'nome': nome,
@@ -30,7 +29,7 @@ class MembroFamiliar {
     );
   }
 
-  // Método copyWith para facilitar atualizações parciais
+  // Método copyWith para gerência de estado (Chat mandou fazer "boas práticas")
   MembroFamiliar copyWith({
     String? nome,
     int? idade,
