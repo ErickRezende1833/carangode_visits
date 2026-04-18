@@ -29,7 +29,7 @@ class DatabaseHelper {
       CREATE TABLE visitas (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL,
-        sincronizado INTEGER NOT NULL DEFAULT 0
+        synced INTEGER NOT NULL DEFAULT 0
       )
     ''');
   }

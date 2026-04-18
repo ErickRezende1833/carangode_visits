@@ -1,19 +1,19 @@
 class Visita {
   final int? id;
   final String nome;
-  final int sincronizado;
+  final bool synced;
 
   Visita({
     this.id,
     required this.nome,
-    this.sincronizado = 0,
+    this.synced = false,
   });
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'nome': nome,
-      'sincronizado': sincronizado,
+      'synced': synced ? 1 : 0 ,
     };
   }
 
@@ -21,7 +21,7 @@ class Visita {
     return Visita(
       id: map['id'],
       nome: map['nome'],
-      sincronizado: map['sincronizado'],
+      synced: map['synced'] == 1,
     );
   }
 }
