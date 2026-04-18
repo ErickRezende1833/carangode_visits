@@ -1,10 +1,19 @@
+import 'package:carangode_visits_app/home_page.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
 import 'package:carangode_visits_app/views/formView.dart';
 import 'package:flutter/material.dart';
-// 1. Importe o seu arquivo (ajuste o caminho se necessário)
 import 'views/homeCampoView.dart'; 
 import 'views/widgets.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(const MyApp());
 }
 
@@ -20,7 +29,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       
-      home: FormView(), 
+      home: HomePage(), 
     );
   }
 }

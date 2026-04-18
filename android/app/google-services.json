@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "770205798301",
+    "project_id": "carangode-visits",
+    "storage_bucket": "carangode-visits.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:770205798301:android:f045da8d7ad1d5bec1a974",
+        "android_client_info": {
+          "package_name": "com.example.carangode_visits_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANeC4fKSWIZ9yaX4jUeP9aLyovrVsuZTY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
