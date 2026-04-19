@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'database/visita_dao.dart';
-import 'models/visita.dart';
+import 'database/familia_dao.dart';
+import 'models/familiaModel.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,27 +12,48 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final VisitaDao dao = VisitaDao();
+  final FamiliaDao dao = FamiliaDao();
   final TextEditingController nomeController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   // 🔹 SALVAR NO SQLITE (LOCAL)
   Future<void> salvarSQLite() async {
     if (_formKey.currentState!.validate()) {
-      final id = await dao.inserirVisita(
-        Visita(nome: nomeController.text),
-      );
-
+      final id = await dao.inserir(
+  Familia(
+    nomeTitular: nomeController.text,
+    cpf: '',
+    rg: '',
+    dataNascimento: DateTime.now(),
+    sexo: '',
+    estadoCivil: '',
+    nomeMae: '',
+    nis: '',
+    comunidade: '',
+    pontoReferencia: '',
+    telefone: '',
+    tipoAcesso: '',
+    membros: [],
+    rendaMensalBruta: 0,
+    atividadePrincipal: '',
+    dapOuCaf: '',
+    tipoConstrucao: '',
+    situacaoCobertura: '',
+    abastecimentoAgua: '',
+    esgotamentoSanitario: '',
+    possuiEnergiaEletrica: false,
+  ),
+);
       print("Salvou no SQLite com ID: $id");
     }
   }
 
   // 🔹 LISTAR SQLITE
   Future<void> listarSQLite() async {
-    final lista = await dao.listarVisitas();
+    final lista = await dao.listarFamilias();
 
     for (var v in lista) {
-      print("${v.id} - ${v.nome}");
+      print("${v.id} - ${v.nomeTitular}");
     }
   }
 

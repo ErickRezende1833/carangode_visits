@@ -1,4 +1,6 @@
 import 'package:carangode_visits_app/database/database_helper.dart';
+import 'package:carangode_visits_app/services/sync_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'widgets.dart';
 import '../models/familiaModel.dart';
@@ -355,7 +357,7 @@ class _FormViewState extends State<FormView> {
                     );
 
                     await DatabaseHelper.instance.insertFamilia(familia);
-                    
+
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Validado com sucesso!')),
                     );
