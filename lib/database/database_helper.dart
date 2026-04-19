@@ -1,5 +1,6 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:carangode_visits_app/models/familiaModel.dart';
 
 class DatabaseHelper {
   DatabaseHelper._();
@@ -26,11 +27,49 @@ class DatabaseHelper {
 
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE visitas (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL,
-        synced INTEGER NOT NULL DEFAULT 0
-      )
-    ''');
+    CREATE TABLE familias (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nomeTitular TEXT,
+    cpf TEXT,
+    rg TEXT,
+    dataNascimento TEXT,
+    sexo TEXT,
+    estadoCivil TEXT,
+    nomeMae TEXT,
+    nis TEXT,
+    comunidade TEXT,
+    pontoReferencia TEXT,
+    telefone TEXT,
+    tipoAcesso TEXT,
+    membros TEXT,
+    rendaMensalBruta REAL,
+    atividadePrincipal TEXT,
+    dapOuCaf TEXT,
+    tipoConstrucao TEXT,
+    situacaoCobertura TEXT,
+    abastecimentoAgua TEXT,
+    esgotamentoSanitario TEXT,
+    possuiEnergiaEletrica INTEGER,
+    pathFotoFachada TEXT,
+    pathFotoInterior TEXT,
+    pathFotoDocumentos TEXT,
+    pathAssinaturaDigital TEXT
+  )
+''');
+  }
+  Future<int> insertFamilia(Familia familia) async {
+    final db = await database;
+
+    return await db.insert(
+      'familias',
+      familia.toMap(),
+    );
+  }
+
+  Future<List<Familia>> getAllFamilias() async {
+  final db = await database;
+  final result = await db.query('familias');
+
+  return result.map((e) => Familia.fromMap(e)).toList();
   }
 }
