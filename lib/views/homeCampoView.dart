@@ -16,9 +16,8 @@ class _HomeCampoViewState extends State<HomeCampoView> {
   @override
   void initState() {
     super.initState();
-    _viewModel.carregarVisitas(); // Busca os dados ao iniciar a tela
-    
-    // Opcional: Escuta mudanças na ViewModel para atualizar a UI
+    _viewModel.carregarFamilias();
+
     _viewModel.addListener(() {
       if (mounted) setState(() {});
     });
@@ -39,29 +38,41 @@ class _HomeCampoViewState extends State<HomeCampoView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Cadastros:", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                const Text(
+                  "Cadastros:",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 10),
-                
+
                 // LISTA DE VISITAS
                 Expanded(
-                  child: _viewModel.isLoading 
-                    ? const Center(child: CircularProgressIndicator())
-                    : _viewModel.visitas.isEmpty
-                      ? const Center(child: Text("Nenhuma visita encontrada."))
+                  child: _viewModel.isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : _viewModel.familias.isEmpty
+                      ? const Center(child: Text("Nenhuma família encontrada."))
                       : RefreshIndicator(
-                          onRefresh: () => _viewModel.carregarVisitas(),
+                          onRefresh: () => _viewModel.carregarFamilias(),
                           child: ListView.builder(
-                            itemCount: _viewModel.visitas.length,
+                            itemCount:
+                                _viewModel.familias.length, // Use a nova lista
                             itemBuilder: (context, index) {
-                              final visita = _viewModel.visitas[index];
+                              final familia = _viewModel.familias[index];
                               return Card(
                                 child: ListTile(
                                   leading: Icon(
-                                    visita.synced ? Icons.cloud_done : Icons.cloud_off,
-                                    color: visita.synced ? Colors.green : Colors.orange,
+                                    familia.synced
+                                        ? Icons.cloud_done
+                                        : Icons.cloud_off,
+                                    color: familia.synced
+                                        ? Colors.green
+                                        : Colors.orange,
                                   ),
-                                  title: Text(visita.nome),
-                                  subtitle: Text(visita.synced ? "Sincronizado" : "Pendente"),
+                                  title: Text(
+                                    familia.nomeTitular,
+                                  ), // Campo correto do familiaModel.dart
+                                  subtitle: Text(
+                                    "Comunidade: ${familia.comunidade}",
+                                  ),
                                 ),
                               );
                             },
@@ -74,7 +85,7 @@ class _HomeCampoViewState extends State<HomeCampoView> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     CustomElevatedButton(
-                      onPressed: () => _viewModel.carregarVisitas(), // Botão de atualizar manual
+                      onPressed: () => _viewModel.carregarFamilias(),
                       icon: Icons.sync,
                       label: "Sincronizar",
                     ),
@@ -82,7 +93,7 @@ class _HomeCampoViewState extends State<HomeCampoView> {
                       onPressed: () async {
                         // Ao voltar do formulário, recarrega a lista
                         await Navigator.pushNamed(context, '/formulario');
-                        _viewModel.carregarVisitas();
+                        _viewModel.carregarFamilias();
                       },
                       icon: Icons.add,
                       label: "Adicionar",

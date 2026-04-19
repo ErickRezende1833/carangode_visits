@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
-import '../models/visita.dart';
-import '../database/visita_dao.dart';
+import '../models/familiaModel.dart';
+import '../database/familia_dao.dart';
 
 class HomeCampoViewModel extends ChangeNotifier {
-  final VisitaDao _visitaDao = VisitaDao();
+  final FamiliaDao _familiaDao = FamiliaDao();
   
-  List<Visita> _visitas = [];
+  List<Familia> _familias = [];
   bool _isLoading = false;
 
-  List<Visita> get visitas => _visitas;
+  List<Familia> get familias => _familias;
   bool get isLoading => _isLoading;
 
-  // Carrega as visitas do SQLite
-  Future<void> carregarVisitas() async {
+  Future<void> carregarFamilias() async {
     _isLoading = true;
-    notifyListeners(); // Notifica a View que está carregando
+    notifyListeners();
 
     try {
-      _visitas = await _visitaDao.listarVisitas();
+      _familias = await _familiaDao.listarFamilias();
     } catch (e) {
-      debugPrint("Erro ao carregar visitas: $e");
+      debugPrint("Erro ao carregar famílias: $e");
     } finally {
       _isLoading = false;
-      notifyListeners(); // Notifica a View com os novos dados
+      notifyListeners();
     }
   }
 }
