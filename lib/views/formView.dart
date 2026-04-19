@@ -359,9 +359,15 @@ class _FormViewState extends State<FormView> {
                     await DatabaseHelper.instance.insertFamilia(familia);
 
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Validado com sucesso!')),
+                      const SnackBar(content: Text('Salvo com sucesso!')),
                     );
+
+                    // Retorna para a HomeCampoView após 1 segundo
+                    Future.delayed(const Duration(seconds: 1), () {
+                      Navigator.pop(context);
+                    });
                   }
+                  ;
                 },
                 child: const Text('Salvar Cadastro'),
               ),

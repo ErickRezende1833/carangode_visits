@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-
-
-
 // Custom Bottom Navigation Bar Widget
 
 class CustomBottomNavigationBar extends StatelessWidget {
@@ -23,22 +20,21 @@ class CustomBottomNavigationBar extends StatelessWidget {
       selectedFontSize: 14,
       unselectedFontSize: 14,
       onTap: (index) {
+        if (index == currentIndex) return;
         
+        if (index == 0) {
+          Navigator.pushReplacementNamed(context, '/campo');
+        } else if (index == 1) {
+          Navigator.pushReplacementNamed(context, '/');
+        }
       },
       items: [
-        BottomNavigationBarItem(
-          label: 'Campo',
-          icon: Icon(Icons.flag),
-        ),
-        BottomNavigationBarItem(
-          label: 'Base',
-          icon: Icon(Icons.home),
-        ),
+        BottomNavigationBarItem(label: 'Campo', icon: Icon(Icons.flag)),
+        BottomNavigationBarItem(label: 'Base', icon: Icon(Icons.home)),
       ],
     );
   }
 }
-
 
 //botão com icon e label
 
@@ -86,10 +82,7 @@ class CustomTextField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       validator: validator,
-      decoration: InputDecoration(
-        labelText: labelText,
-        hintText: hintText,
-      ),
+      decoration: InputDecoration(labelText: labelText, hintText: hintText),
     );
   }
 }
@@ -123,16 +116,14 @@ class CustomIconTextField extends StatelessWidget {
         prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
         border: const OutlineInputBorder(),
 
-
         errorStyle: const TextStyle(
-        color: Colors.red,
-        fontWeight: FontWeight.bold,
+          color: Colors.red,
+          fontWeight: FontWeight.bold,
         ),
 
         errorBorder: const OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.red, width: 1),
-      ),
-
+          borderSide: BorderSide(color: Colors.red, width: 1),
+        ),
       ),
     );
   }

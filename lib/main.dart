@@ -32,7 +32,13 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       
-      home: HomePage(), 
-    );
+      initialRoute: '/campo',
+        routes: {
+          
+          '/campo': (context) => const HomeCampoView(),
+          '/formulario': (context) => const FormView(),
+        },
+      );
+
   }
 }

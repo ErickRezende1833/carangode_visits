@@ -15,6 +15,9 @@ class _HomePageState extends State<HomePage> {
   final FamiliaDao dao = FamiliaDao();
   final TextEditingController nomeController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  
+  // Lista local para exibir os dados do SQLite na tela
+  List<Visita> _visitasLocal = [];
 
   // 🔹 SALVAR NO SQLITE (LOCAL)
   Future<void> salvarSQLite() async {
@@ -65,15 +68,34 @@ class _HomePageState extends State<HomePage> {
       'nome': nomeController.text,
       'timestamp': FieldValue.serverTimestamp(),
     });
+  }
 
-    print("Salvou no Firebase: ${nomeController.text}");
+  // 🔹 SALVAR NO SQLITE (LOCAL)
+  Future<void> salvarSQLite() async {
+    if (_formKey.currentState!.validate()) {
+      final novaVisita = Visita(nome: nomeController.text);
+      await dao.inserirVisita(novaVisita);
+      
+      nomeController.clear(); // Limpa o campo após salvar
+      _atualizarLista(); // Atualiza a lista na tela
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Salvo no SQLite com sucesso!")),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("SQLite + Firebase Teste"),
+        title: const Text("Teste SQLite Local"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _atualizarLista,
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -84,32 +106,45 @@ class _HomePageState extends State<HomePage> {
               TextFormField(
                 controller: nomeController,
                 decoration: const InputDecoration(
-                  labelText: "Nome",
+                  labelText: "Nome da Visita",
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Digite um nome";
-                  }
-                  return null;
-                },
+                validator: (value) => (value == null || value.isEmpty) ? "Digite um nome" : null,
               ),
-
-              const SizedBox(height: 20),
-
-              ElevatedButton(
-                onPressed: salvarSQLite,
-                child: const Text("Salvar no SQLite"),
+              const SizedBox(height: 10),
+              
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: salvarSQLite,
+                    icon: const Icon(Icons.save),
+                    label: const Text("Salvar Local"),
+                  ),
+                ],
               ),
-
-              ElevatedButton(
-                onPressed: salvarFirebase,
-                child: const Text("Salvar no Firebase"),
-              ),
-
-              ElevatedButton(
-                onPressed: listarSQLite,
-                child: const Text("Listar SQLite"),
+              
+              const Divider(height: 30),
+              const Text("Dados no SQLite:", style: TextStyle(fontWeight: FontWeight.bold)),
+              
+              // 🔹 LISTA EM TEMPO REAL
+              Expanded(
+                child: _visitasLocal.isEmpty
+                    ? const Center(child: Text("Nenhum dado local encontrado."))
+                    : ListView.builder(
+                        itemCount: _visitasLocal.length,
+                        itemBuilder: (context, index) {
+                          final visita = _visitasLocal[index];
+                          return ListTile(
+                            leading: Icon(
+                              visita.synced ? Icons.cloud_done : Icons.cloud_off,
+                              color: visita.synced ? Colors.green : Colors.orange,
+                            ),
+                            title: Text(visita.nome),
+                            subtitle: Text("ID: ${visita.id} | Sincronizado: ${visita.synced ? 'Sim' : 'Não'}"),
+                          );
+                        },
+                      ),
               ),
             ],
           ),
