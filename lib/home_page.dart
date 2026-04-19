@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'database/visita_dao.dart';
-import 'models/visita.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'database/familia_dao.dart';
+import 'models/familiaModel.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,24 +12,61 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final VisitaDao dao = VisitaDao();
+  final FamiliaDao dao = FamiliaDao();
   final TextEditingController nomeController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   
   // Lista local para exibir os dados do SQLite na tela
   List<Visita> _visitasLocal = [];
 
-  @override
-  void initState() {
-    super.initState();
-    _atualizarLista(); // Carrega os dados assim que a tela abre
+  // 🔹 SALVAR NO SQLITE (LOCAL)
+  Future<void> salvarSQLite() async {
+    if (_formKey.currentState!.validate()) {
+      final id = await dao.inserir(
+  Familia(
+    nomeTitular: nomeController.text,
+    cpf: '',
+    rg: '',
+    dataNascimento: DateTime.now(),
+    sexo: '',
+    estadoCivil: '',
+    nomeMae: '',
+    nis: '',
+    comunidade: '',
+    pontoReferencia: '',
+    telefone: '',
+    tipoAcesso: '',
+    membros: [],
+    rendaMensalBruta: 0,
+    atividadePrincipal: '',
+    dapOuCaf: '',
+    tipoConstrucao: '',
+    situacaoCobertura: '',
+    abastecimentoAgua: '',
+    esgotamentoSanitario: '',
+    possuiEnergiaEletrica: false,
+  ),
+);
+      print("Salvou no SQLite com ID: $id");
+    }
   }
 
-  // 🔹 FUNÇÃO PARA RECARREGAR A LISTA DO SQLITE
-  Future<void> _atualizarLista() async {
-    final lista = await dao.listarVisitas();
-    setState(() {
-      _visitasLocal = lista;
+  // 🔹 LISTAR SQLITE
+  Future<void> listarSQLite() async {
+    final lista = await dao.listarFamilias();
+
+    for (var v in lista) {
+      print("${v.id} - ${v.nomeTitular}");
+    }
+  }
+
+  // 🔹 SALVAR NO FIREBASE (CLOUD)
+  Future<void> salvarFirebase() async {
+    if (nomeController.text.isEmpty) return;
+
+    await FirebaseFirestore.instance.collection('visitas').add({
+      'nome': nomeController.text,
+      'timestamp': FieldValue.serverTimestamp(),
     });
   }
 

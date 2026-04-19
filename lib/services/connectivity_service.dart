@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
-
 import 'sync_service.dart';
 
-class NetworkService {
+class ConnectivityService {
   final Connectivity _connectivity = Connectivity();
   StreamSubscription? _subscription;
 
-  void startListening() {
+  void start() {
     _subscription = _connectivity.onConnectivityChanged.listen((result) {
       if (result != ConnectivityResult.none) {
-        print("🌐 Internet voltou → sincronizando...");
+        print("📡 Internet voltou, rodando sync...");
+
         SyncService().syncFamilias();
       }
     });

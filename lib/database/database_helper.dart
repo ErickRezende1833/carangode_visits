@@ -54,17 +54,21 @@ class DatabaseHelper {
     pathFotoInterior TEXT,
     pathFotoDocumentos TEXT,
     pathAssinaturaDigital TEXT
+    synced INTEGER DEFAULT 0
   )
 ''');
   }
   Future<int> insertFamilia(Familia familia) async {
-    final db = await database;
+  final db = await database;
 
-    return await db.insert(
-      'familias',
-      familia.toMap(),
-    );
-  }
+  final map = familia.toMap();
+  map['synced'] = 0; 
+
+  return await db.insert(
+    'familias',
+    map,
+  );
+}
 
   Future<List<Familia>> getAllFamilias() async {
   final db = await database;

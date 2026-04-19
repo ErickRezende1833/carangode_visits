@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'membroFamiliaModel.dart';
 
-
 class Familia {
+
+  final int? id;
+  final bool synced;
+
   // 1. Identificação do Responsável
   final String nomeTitular;
   final String cpf;
@@ -41,6 +44,7 @@ class Familia {
   final String? pathAssinaturaDigital;
 
   Familia({
+    this.id,
     required this.nomeTitular,
     required this.cpf,
     required this.rg,
@@ -66,6 +70,7 @@ class Familia {
     this.pathFotoInterior,
     this.pathFotoDocumentos,
     this.pathAssinaturaDigital,
+    this.synced = false,
   });
 
   // Método copyWith para gerência de estado (Chat mandou fazer "boas práticas")
@@ -105,71 +110,82 @@ class Familia {
       pathFotoFachada: pathFotoFachada ?? this.pathFotoFachada,
       pathFotoInterior: pathFotoInterior ?? this.pathFotoInterior,
       pathFotoDocumentos: pathFotoDocumentos ?? this.pathFotoDocumentos,
-      pathAssinaturaDigital: pathAssinaturaDigital ?? this.pathAssinaturaDigital,
+      pathAssinaturaDigital:
+          pathAssinaturaDigital ?? this.pathAssinaturaDigital,
     );
   }
 
   // Converte para Map para persistência de dados
   Map<String, dynamic> toMap() {
-    return {
-      'nomeTitular': nomeTitular,
-      'cpf': cpf,
-      'rg': rg,
-      'dataNascimento': dataNascimento.toIso8601String(),
-      'sexo': sexo,
-      'estadoCivil': estadoCivil,
-      'nomeMae': nomeMae,
-      'nis': nis,
-      'comunidade': comunidade,
-      'pontoReferencia': pontoReferencia,
-      'telefone': telefone,
-      'tipoAcesso': tipoAcesso,
-      'membros': jsonEncode(membros.map((x) => x.toMap()).toList()),
-      'rendaMensalBruta': rendaMensalBruta,
-      'atividadePrincipal': atividadePrincipal,
-      'dapOuCaf': dapOuCaf,
-      'tipoConstrucao': tipoConstrucao,
-      'situacaoCobertura': situacaoCobertura,
-      'abastecimentoAgua': abastecimentoAgua,
-      'esgotamentoSanitario': esgotamentoSanitario,
-      'possuiEnergiaEletrica': possuiEnergiaEletrica ? 1 : 0,
-      'pathFotoFachada': pathFotoFachada,
-      'pathFotoInterior': pathFotoInterior,
-      'pathFotoDocumentos': pathFotoDocumentos,
-      'pathAssinaturaDigital': pathAssinaturaDigital,
-    };
+  final map = {
+    'nomeTitular': nomeTitular,
+    'cpf': cpf,
+    'rg': rg,
+    'dataNascimento': dataNascimento.toIso8601String(),
+    'sexo': sexo,
+    'estadoCivil': estadoCivil,
+    'nomeMae': nomeMae,
+    'nis': nis,
+    'comunidade': comunidade,
+    'pontoReferencia': pontoReferencia,
+    'telefone': telefone,
+    'tipoAcesso': tipoAcesso,
+    'membros': jsonEncode(membros.map((x) => x.toMap()).toList()),
+    'rendaMensalBruta': rendaMensalBruta,
+    'atividadePrincipal': atividadePrincipal,
+    'dapOuCaf': dapOuCaf,
+    'tipoConstrucao': tipoConstrucao,
+    'situacaoCobertura': situacaoCobertura,
+    'abastecimentoAgua': abastecimentoAgua,
+    'esgotamentoSanitario': esgotamentoSanitario,
+    'possuiEnergiaEletrica': possuiEnergiaEletrica ? 1 : 0,
+    'pathFotoFachada': pathFotoFachada,
+    'pathFotoInterior': pathFotoInterior,
+    'pathFotoDocumentos': pathFotoDocumentos,
+    'pathAssinaturaDigital': pathAssinaturaDigital,
+    'synced': synced ? 1 : 0,
+  };
+
+  if (id != null) {
+    map['id'] = id!;
   }
+
+  return map;
+}
 
   // Cria o objeto a partir de um Map
   factory Familia.fromMap(Map<String, dynamic> map) {
-    return Familia(
-      nomeTitular: map['nomeTitular'] ?? '',
-      cpf: map['cpf'] ?? '',
-      rg: map['rg'] ?? '',
-      dataNascimento: DateTime.parse(map['dataNascimento']),
-      sexo: map['sexo'] ?? '',
-      estadoCivil: map['estadoCivil'] ?? '',
-      nomeMae: map['nomeMae'] ?? '',
-      nis: map['nis'] ?? '',
-      comunidade: map['comunidade'] ?? '',
-      pontoReferencia: map['pontoReferencia'] ?? '',
-      telefone: map['telefone'] ?? '',
-      tipoAcesso: map['tipoAcesso'] ?? '',
-      membros: List<MembroFamiliar>.from(
-        jsonDecode(map['membros'] ?? '[]').map((x) => MembroFamiliar.fromMap(x)),
-      ),
-      rendaMensalBruta: map['rendaMensalBruta']?.toDouble() ?? 0.0,
-      atividadePrincipal: map['atividadePrincipal'] ?? '',
-      dapOuCaf: map['dapOuCaf'] ?? '',
-      tipoConstrucao: map['tipoConstrucao'] ?? '',
-      situacaoCobertura: map['situacaoCobertura'] ?? '',
-      abastecimentoAgua: map['abastecimentoAgua'] ?? '',
-      esgotamentoSanitario: map['esgotamentoSanitario'] ?? '',
-      possuiEnergiaEletrica: map['possuiEnergiaEletrica'] == 1,
-      pathFotoFachada: map['pathFotoFachada'],
-      pathFotoInterior: map['pathFotoInterior'],
-      pathFotoDocumentos: map['pathFotoDocumentos'],
-      pathAssinaturaDigital: map['pathAssinaturaDigital'],
-    );
+  return Familia(
+    id: map['id'],
+    nomeTitular: map['nomeTitular'] ?? '',
+    cpf: map['cpf'] ?? '',
+    rg: map['rg'] ?? '',
+    dataNascimento: DateTime.parse(map['dataNascimento']),
+    sexo: map['sexo'] ?? '',
+    estadoCivil: map['estadoCivil'] ?? '',
+    nomeMae: map['nomeMae'] ?? '',
+    nis: map['nis'] ?? '',
+    comunidade: map['comunidade'] ?? '',
+    pontoReferencia: map['pontoReferencia'] ?? '',
+    telefone: map['telefone'] ?? '',
+    tipoAcesso: map['tipoAcesso'] ?? '',
+    membros: List<MembroFamiliar>.from(
+      jsonDecode(map['membros'] ?? '[]')
+          .map((x) => MembroFamiliar.fromMap(x)),
+    ),
+    rendaMensalBruta: map['rendaMensalBruta']?.toDouble() ?? 0.0,
+    atividadePrincipal: map['atividadePrincipal'] ?? '',
+    dapOuCaf: map['dapOuCaf'] ?? '',
+    tipoConstrucao: map['tipoConstrucao'] ?? '',
+    situacaoCobertura: map['situacaoCobertura'] ?? '',
+    abastecimentoAgua: map['abastecimentoAgua'] ?? '',
+    esgotamentoSanitario: map['esgotamentoSanitario'] ?? '',
+    possuiEnergiaEletrica: map['possuiEnergiaEletrica'] == 1,
+    pathFotoFachada: map['pathFotoFachada'],
+    pathFotoInterior: map['pathFotoInterior'],
+    pathFotoDocumentos: map['pathFotoDocumentos'],
+    pathAssinaturaDigital: map['pathAssinaturaDigital'],
+    synced: map['synced'] == 1,
+  );
   }
 }

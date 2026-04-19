@@ -1,6 +1,7 @@
 import 'package:carangode_visits_app/home_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'services/connectivity_service.dart';
 
 import 'package:carangode_visits_app/views/formView.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  ConnectivityService().start();
 
   runApp(const MyApp());
 }
