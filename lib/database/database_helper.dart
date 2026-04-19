@@ -53,7 +53,7 @@ class DatabaseHelper {
     pathFotoFachada TEXT,
     pathFotoInterior TEXT,
     pathFotoDocumentos TEXT,
-    pathAssinaturaDigital TEXT
+    pathAssinaturaDigital TEXT,
     synced INTEGER DEFAULT 0
   )
 ''');
