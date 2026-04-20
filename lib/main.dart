@@ -3,7 +3,6 @@ import 'firebase_options.dart';
 import 'package:carangode_visits_app/views/formView.dart';
 import 'package:flutter/material.dart';
 import 'views/homeCampoView.dart'; 
-import 'views/widgets.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

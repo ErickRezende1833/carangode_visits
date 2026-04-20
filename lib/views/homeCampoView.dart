@@ -1,7 +1,7 @@
+import 'package:carangode_visits_app/services/sync_service.dart';
 import 'package:flutter/material.dart';
 import 'widgets.dart';
-import '../viewModels/homeCampoViewModel.dart'; // Importe sua ViewModel
-import '../models/visita.dart';
+import '../viewModels/homeCampoViewModel.dart';
 
 class HomeCampoView extends StatefulWidget {
   const HomeCampoView({Key? key}) : super(key: key);
@@ -67,9 +67,7 @@ class _HomeCampoViewState extends State<HomeCampoView> {
                                         ? Colors.green
                                         : Colors.orange,
                                   ),
-                                  title: Text(
-                                    familia.nomeTitular,
-                                  ), // Campo correto do familiaModel.dart
+                                  title: Text(familia.nomeTitular),
                                   subtitle: Text(
                                     "Comunidade: ${familia.comunidade}",
                                   ),
@@ -85,13 +83,30 @@ class _HomeCampoViewState extends State<HomeCampoView> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     CustomElevatedButton(
-                      onPressed: () => _viewModel.carregarFamilias(),
+                      onPressed: () async {
+                        // 1. Mostra um aviso de que começou
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "Sincronizando dados com o servidor...",
+                            ),
+                          ),
+                        );
+                        await SyncService().syncFamilias();
+                        await _viewModel.carregarFamilias();
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Sincronização concluída!"),
+                            ),
+                          );
+                        }
+                      },
                       icon: Icons.sync,
                       label: "Sincronizar",
                     ),
                     CustomElevatedButton(
                       onPressed: () async {
-                        // Ao voltar do formulário, recarrega a lista
                         await Navigator.pushNamed(context, '/formulario');
                         _viewModel.carregarFamilias();
                       },
