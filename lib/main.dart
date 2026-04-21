@@ -3,6 +3,7 @@ import 'firebase_options.dart';
 import 'package:carangode_visits_app/views/formView.dart';
 import 'package:flutter/material.dart';
 import 'views/homeCampoView.dart'; 
+import 'views/loginView.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,9 +27,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       
-      initialRoute: '/campo',
+      initialRoute: '/login',
         routes: {
-          
+          '/login': (context) => LoginView(),
           '/campo': (context) => const HomeCampoView(),
           '/formulario': (context) => const FormView(),
         },
