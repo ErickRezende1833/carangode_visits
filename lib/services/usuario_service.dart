@@ -1,10 +1,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/usuarioModel.dart';
 
 class UsuarioService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<void> cadastrarUsuario(UsuarioModel usuario) async {
+  Future<void> cadastrarEntrevistador({
+    required String nome,
+    required String email,
+    required String senha,
+  }) async {
+
+    final credencial = await _auth
+        .createUserWithEmailAndPassword(
+      email: email,
+      password: senha,
+    );
+
+    final usuario = UsuarioModel(
+      id: credencial.user!.uid,
+      nome: nome,
+      email: email,
+      tipo: 'entrevistador',
+    );
+
     await _firestore
         .collection('usuarios')
         .doc(usuario.id)
@@ -19,6 +39,6 @@ class UsuarioService {
 
     return snapshot.docs
         .map((doc) => UsuarioModel.fromMap(doc.data()))
-        .toList(); 
-    }
+        .toList();
+  }
 }
