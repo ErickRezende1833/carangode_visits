@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
-
-import '../models/usuarioModel.dart';
 import '../services/usuario_service.dart';
 
 class CadastroEntrevistadorView extends StatefulWidget {
@@ -17,6 +14,7 @@ class _CadastroEntrevistadorViewState
 
   final nomeController = TextEditingController();
   final emailController = TextEditingController();
+  final senhaController = TextEditingController();
 
   final usuarioService = UsuarioService();
 
@@ -25,7 +23,8 @@ class _CadastroEntrevistadorViewState
   Future<void> salvar() async {
 
     if (nomeController.text.isEmpty ||
-        emailController.text.isEmpty) {
+        emailController.text.isEmpty ||
+        senhaController.text.isEmpty) {
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -37,23 +36,25 @@ class _CadastroEntrevistadorViewState
     }
 
     try {
-
       setState(() {
         loading = true;
       });
 
-      final usuario = UsuarioModel(
-        id: const Uuid().v4(),
+      await usuarioService.cadastrarEntrevistador(
         nome: nomeController.text.trim(),
         email: emailController.text.trim(),
-        tipo: 'entrevistador',
+        senha: senhaController.text.trim(),
       );
 
-      await usuarioService.cadastrarUsuario(usuario);
+      setState(() {
+        loading = false;
+      });
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Entrevistador cadastrado com sucesso!'),
+          content: Text(
+            'Entrevistador cadastrado com sucesso!',
+          ),
         ),
       );
 
@@ -61,18 +62,15 @@ class _CadastroEntrevistadorViewState
 
     } catch (e) {
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Erro ao cadastrar: $e'),
-        ),
-      );
-
-    } finally {
-
       setState(() {
         loading = false;
       });
 
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro: $e'),
+        ),
+      );
     }
   }
 
@@ -80,6 +78,7 @@ class _CadastroEntrevistadorViewState
   void dispose() {
     nomeController.dispose();
     emailController.dispose();
+    senhaController.dispose();
     super.dispose();
   }
 
@@ -90,8 +89,10 @@ class _CadastroEntrevistadorViewState
       appBar: AppBar(
         title: const Text('Cadastrar Entrevistador'),
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(16),
+
         child: Column(
           children: [
 
@@ -99,7 +100,6 @@ class _CadastroEntrevistadorViewState
               controller: nomeController,
               decoration: const InputDecoration(
                 labelText: 'Nome',
-                border: OutlineInputBorder(),
               ),
             ),
 
@@ -107,24 +107,29 @@ class _CadastroEntrevistadorViewState
 
             TextField(
               controller: emailController,
-              keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
                 labelText: 'Email',
-                border: OutlineInputBorder(),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            TextField(
+              controller: senhaController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: 'Senha',
               ),
             ),
 
             const SizedBox(height: 24),
 
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: loading ? null : salvar,
-                child: loading
-                    ? const CircularProgressIndicator()
-                    : const Text('Salvar'),
-              ),
+            ElevatedButton(
+              onPressed: loading ? null : salvar,
+
+              child: loading
+                  ? const CircularProgressIndicator()
+                  : const Text('Salvar'),
             ),
           ],
         ),
