@@ -4,6 +4,9 @@ import 'package:carangode_visits_app/views/formView.dart';
 import 'package:flutter/material.dart';
 import 'views/homeCampoView.dart'; 
 import 'views/loginView.dart';
+import 'views/cadastroEntrevistadorView.dart';
+import 'views/homeGerenteView.dart';
+import 'views/consultaVisitasView.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +35,9 @@ class MyApp extends StatelessWidget {
           '/login': (context) => LoginView(),
           '/campo': (context) => const HomeCampoView(),
           '/formulario': (context) => const FormView(),
+          '/cadastro-entrevistador': (context) => CadastroEntrevistadorView(),
+          '/gerente': (context) => const HomeGerenteView(),
+          '/consulta-visitas': (context) => const ConsultaVisitasView(),
         },
       );
 
