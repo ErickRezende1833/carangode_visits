@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carangode_visits_app/views/widgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -9,13 +11,11 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  // CONTROLADORES
   final _emailController = TextEditingController();
   final _senhaController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
-  // Variáveis de estado
   bool _obscureSenha = true;
   bool _isLoading = false;
 
@@ -46,6 +46,66 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
+  Future<void> _fazerLogin() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+
+      final credencial = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _senhaController.text.trim(),
+      );
+
+      final doc = await FirebaseFirestore.instance
+          .collection('usuarios')
+          .doc(credencial.user!.uid)
+          .get();
+
+      if (!doc.exists) {
+        throw Exception('Usuário não encontrado');
+      }
+
+      final dados = doc.data()!;
+      final tipo = dados['tipo'];
+
+      if (!mounted) return;
+
+      if (tipo == 'gerente') {
+        Navigator.pushReplacementNamed(
+          context,
+          '/gerente',
+        );
+      } else if (tipo == 'entrevistador') {
+        Navigator.pushReplacementNamed(
+          context,
+          '/campo',
+        );
+      } else {
+        throw Exception('Tipo de usuário inválido');
+      }
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro no login: $e'),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,12 +121,15 @@ class _LoginViewState extends State<LoginView> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 20),
+
               const Icon(
                 Icons.directions_car_rounded,
                 size: 80,
                 color: Colors.blueGrey,
               ),
+
               const SizedBox(height: 8),
+
               const Text(
                 'Carangode Visits',
                 textAlign: TextAlign.center,
@@ -76,25 +139,40 @@ class _LoginViewState extends State<LoginView> {
                   color: Colors.blueGrey,
                 ),
               ),
+
               const SizedBox(height: 4),
+
               const Text(
                 'Entre na sua conta',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: Colors.grey),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
+                ),
               ),
+
               _secao('Acesso ao Sistema'),
+
               CustomIconTextField(
                 controller: _emailController,
                 labelText: 'E-mail',
                 hintText: 'seu@email.com',
                 prefixIcon: Icons.email_outlined,
                 validator: (v) {
-                  if (v == null || v.isEmpty) return 'Obrigatório';
-                  if (!v.contains('@')) return 'E-mail inválido';
+                  if (v == null || v.isEmpty) {
+                    return 'Obrigatório';
+                  }
+
+                  if (!v.contains('@')) {
+                    return 'E-mail inválido';
+                  }
+
                   return null;
                 },
               ),
+
               const SizedBox(height: 16),
+
               TextFormField(
                 controller: _senhaController,
                 obscureText: _obscureSenha,
@@ -108,18 +186,29 @@ class _LoginViewState extends State<LoginView> {
                           ? Icons.visibility_off_outlined
                           : Icons.visibility_outlined,
                     ),
-                    onPressed: () =>
-                        setState(() => _obscureSenha = !_obscureSenha),
+                    onPressed: () {
+                      setState(() {
+                        _obscureSenha = !_obscureSenha;
+                      });
+                    },
                   ),
                   border: const OutlineInputBorder(),
                 ),
                 validator: (v) {
-                  if (v == null || v.isEmpty) return 'Obrigatório';
-                  if (v.length < 6) return 'Mínimo 6 caracteres';
+                  if (v == null || v.isEmpty) {
+                    return 'Obrigatório';
+                  }
+
+                  if (v.length < 6) {
+                    return 'Mínimo 6 caracteres';
+                  }
+
                   return null;
                 },
               ),
+
               const SizedBox(height: 8),
+
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
@@ -127,27 +216,36 @@ class _LoginViewState extends State<LoginView> {
                   child: const Text('Esqueci minha senha'),
                 ),
               ),
+
               const SizedBox(height: 16),
+
               ElevatedButton(
-                onPressed: _isLoading
-                    ? null
-                    : () async {
-                        if (_formKey.currentState!.validate()) {
-                          setState(() => _isLoading = true);
-                          await Future.delayed(const Duration(seconds: 2));
-                          setState(() => _isLoading = false);
-                          // TODO: navegar para tela principal
-                        }
-                      },
+                onPressed: _isLoading ? null : _fazerLogin,
                 child: _isLoading
                     ? const SizedBox(
                         width: 22,
                         height: 22,
-                        child: CircularProgressIndicator(strokeWidth: 2.5),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                        ),
                       )
                     : const Text('Entrar'),
               ),
+
               const SizedBox(height: 16),
+
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/cadastro-entrevistador',
+                  );
+                },
+                child: const Text('Abrir Cadastro'),
+              ),
+
+              const SizedBox(height: 16),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -158,6 +256,7 @@ class _LoginViewState extends State<LoginView> {
                   ),
                 ],
               ),
+
               const SizedBox(height: 50),
             ],
           ),
