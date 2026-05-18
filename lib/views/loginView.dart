@@ -151,7 +151,7 @@ class _LoginViewState extends State<LoginView> {
                 ),
               ),
 
-              _secao('Acesso ao Sistema'),
+              const SizedBox(height: 40),
 
               CustomIconTextField(
                 controller: _emailController,
@@ -162,11 +162,9 @@ class _LoginViewState extends State<LoginView> {
                   if (v == null || v.isEmpty) {
                     return 'Obrigatório';
                   }
-
                   if (!v.contains('@')) {
                     return 'E-mail inválido';
                   }
-
                   return null;
                 },
               ),
@@ -193,69 +191,42 @@ class _LoginViewState extends State<LoginView> {
                     },
                   ),
                   border: const OutlineInputBorder(),
+                  errorStyle: const TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  errorBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.red, width: 1),
+                  ),
                 ),
                 validator: (v) {
                   if (v == null || v.isEmpty) {
                     return 'Obrigatório';
                   }
-
                   if (v.length < 6) {
                     return 'Mínimo 6 caracteres';
                   }
-
                   return null;
                 },
               ),
 
-              const SizedBox(height: 8),
+              const SizedBox(height: 24),
 
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {},
-                  child: const Text('Esqueci minha senha'),
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              ElevatedButton(
-                onPressed: _isLoading ? null : _fazerLogin,
-                child: _isLoading
-                    ? const SizedBox(
-                        width: 22,
-                        height: 22,
+              _isLoading
+                  ? const Center(
+                      child: SizedBox(
+                        width: 24,
+                        height: 24,
                         child: CircularProgressIndicator(
                           strokeWidth: 2.5,
                         ),
-                      )
-                    : const Text('Entrar'),
-              ),
-
-              const SizedBox(height: 16),
-
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    '/cadastro-entrevistador',
-                  );
-                },
-                child: const Text('Abrir Cadastro'),
-              ),
-
-              const SizedBox(height: 16),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Não tem conta? '),
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text('Cadastre-se'),
-                  ),
-                ],
-              ),
+                      ),
+                    )
+                  : CustomElevatedButton(
+                      onPressed: _fazerLogin,
+                      icon: Icons.login_rounded,
+                      label: 'Entrar',
+                    ),
 
               const SizedBox(height: 50),
             ],
