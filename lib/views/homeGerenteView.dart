@@ -1,12 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart';
 import 'widgets.dart';
 
 class HomeGerenteView extends StatelessWidget {
   const HomeGerenteView({super.key});
 
   Future<void> _sair(BuildContext context) async {
-    await FirebaseAuth.instance.signOut();
+    await AuthService().logout();
 
     if (!context.mounted) return;
 
@@ -23,10 +23,8 @@ class HomeGerenteView extends StatelessWidget {
         title: const Text('Painel da Gerente'),
         centerTitle: true,
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(16),
-
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -55,9 +53,7 @@ class HomeGerenteView extends StatelessWidget {
             const Text(
               'Gerencie entrevistadores e consultas',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.grey,
-              ),
+              style: TextStyle(color: Colors.grey),
             ),
 
             const SizedBox(height: 40),
@@ -96,10 +92,7 @@ class HomeGerenteView extends StatelessWidget {
           ],
         ),
       ),
-
-      bottomNavigationBar: const CustomBottomNavigationBar(
-        currentIndex: 1,
-      ),
+      bottomNavigationBar: const CustomBottomNavigationBar(currentIndex: 1),
     );
   }
 }
