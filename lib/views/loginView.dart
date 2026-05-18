@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carangode_visits_app/views/widgets.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../viewModels/loginViewModel.dart';
 
 class LoginView extends StatefulWidget {
   final bool apenasGerente;
@@ -21,6 +21,8 @@ class _LoginViewState extends State<LoginView> {
   final _emailController = TextEditingController();
   final _senhaController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  final LoginViewModel _viewModel = LoginViewModel();
 
   bool _obscureSenha = true;
   bool _isLoading = false;
@@ -42,27 +44,12 @@ class _LoginViewState extends State<LoginView> {
         _isLoading = true;
       });
 
-      final credencial = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(
+      final tipo = await _viewModel.autenticar(
         email: _emailController.text.trim(),
-        password: _senhaController.text.trim(),
+        senha: _senhaController.text.trim(),
       );
 
-      final doc = await FirebaseFirestore.instance
-          .collection('usuarios')
-          .doc(credencial.user!.uid)
-          .get();
-
-      if (!doc.exists) {
-        throw Exception('Usuário não encontrado');
-      }
-
-      final dados = doc.data()!;
-      final tipo = dados['tipo'];
-
       if (widget.apenasGerente && tipo != 'gerente') {
-        await FirebaseAuth.instance.signOut();
-
         if (!mounted) return;
 
         ScaffoldMessenger.of(context).showSnackBar(
