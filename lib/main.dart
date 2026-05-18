@@ -1,9 +1,11 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'package:carangode_visits_app/views/formView.dart';
 import 'package:flutter/material.dart';
-import 'views/homeCampoView.dart'; 
+import 'package:firebase_core/firebase_core.dart';
+
+import 'firebase_options.dart';
+
+import 'views/homeCampoView.dart';
 import 'views/loginView.dart';
+import 'views/formView.dart';
 import 'views/cadastroEntrevistadorView.dart';
 import 'views/homeGerenteView.dart';
 import 'views/consultaVisitasView.dart';
@@ -24,22 +26,27 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Carangode Visits',
+      debugShowCheckedModeBanner: false,
+
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 255, 255)),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blueGrey,
+        ),
         useMaterial3: true,
       ),
-      
-      initialRoute: '/login',
-        routes: {
-          '/login': (context) => LoginView(),
-          '/campo': (context) => const HomeCampoView(),
-          '/formulario': (context) => const FormView(),
-          '/cadastro-entrevistador': (context) => CadastroEntrevistadorView(),
-          '/gerente': (context) => const HomeGerenteView(),
-          '/consulta-visitas': (context) => const ConsultaVisitasView(),
-        },
-      );
 
+      initialRoute: '/campo',
+
+      routes: {
+        '/campo': (context) => const HomeCampoView(),
+        '/login': (context) => const LoginView(),
+        '/formulario': (context) => const FormView(),
+        '/cadastro-entrevistador': (context) =>
+            const CadastroEntrevistadorView(),
+        '/gerente': (context) => const HomeGerenteView(),
+        '/consulta-visitas': (context) => const ConsultaVisitasView(),
+      },
+    );
   }
 }
