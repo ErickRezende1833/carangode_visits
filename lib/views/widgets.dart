@@ -1,11 +1,58 @@
 import 'package:flutter/material.dart';
-
-// Custom Bottom Navigation Bar Widget
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'loginView.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
 
-  const CustomBottomNavigationBar({super.key, required this.currentIndex});
+  const CustomBottomNavigationBar({
+    super.key,
+    required this.currentIndex,
+  });
+
+  Future<void> _acessarBase(BuildContext context) async {
+    final usuario = FirebaseAuth.instance.currentUser;
+
+    if (usuario != null) {
+      final doc = await FirebaseFirestore.instance
+          .collection('usuarios')
+          .doc(usuario.uid)
+          .get();
+
+      if (doc.exists) {
+        final dados = doc.data()!;
+        final tipo = dados['tipo'];
+
+        if (tipo == 'gerente') {
+          if (context.mounted) {
+            Navigator.pushReplacementNamed(
+              context,
+              '/gerente',
+            );
+          }
+          return;
+        }
+      }
+    }
+
+    if (!context.mounted) return;
+
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => LoginView(
+          apenasGerente: true,
+          onSucesso: () async {
+            Navigator.pushReplacementNamed(
+              context,
+              '/gerente',
+            );
+          },
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,29 +61,37 @@ class CustomBottomNavigationBar extends StatelessWidget {
       type: BottomNavigationBarType.fixed,
       backgroundColor: Theme.of(context).colorScheme.primary,
       selectedItemColor: Theme.of(context).colorScheme.onPrimary,
-      unselectedItemColor: Theme.of(
-        context,
-      ).colorScheme.onPrimary.withOpacity(.60),
+      unselectedItemColor:
+          Theme.of(context).colorScheme.onPrimary.withOpacity(.60),
       selectedFontSize: 14,
       unselectedFontSize: 14,
-      onTap: (index) {
+      onTap: (index) async {
         if (index == currentIndex) return;
-        
+
         if (index == 0) {
-          Navigator.pushReplacementNamed(context, '/campo');
-        } else if (index == 1) {
-          Navigator.pushReplacementNamed(context, '/gerente');
+          Navigator.pushReplacementNamed(
+            context,
+            '/campo',
+          );
+        }
+
+        if (index == 1) {
+          await _acessarBase(context);
         }
       },
-      items: [
-        BottomNavigationBarItem(label: 'Campo', icon: Icon(Icons.flag)),
-        BottomNavigationBarItem(label: 'Base', icon: Icon(Icons.home)),
+      items: const [
+        BottomNavigationBarItem(
+          label: 'Campo',
+          icon: Icon(Icons.flag),
+        ),
+        BottomNavigationBarItem(
+          label: 'Base',
+          icon: Icon(Icons.home),
+        ),
       ],
     );
   }
 }
-
-//botão com icon e label
 
 class CustomElevatedButton extends StatelessWidget {
   const CustomElevatedButton({
@@ -56,12 +111,12 @@ class CustomElevatedButton extends StatelessWidget {
       onPressed: onPressed,
       icon: Icon(icon, size: 18),
       label: Text(label),
-      style: ElevatedButton.styleFrom(fixedSize: const Size.fromHeight(48)),
+      style: ElevatedButton.styleFrom(
+        fixedSize: const Size.fromHeight(48),
+      ),
     );
   }
 }
-
-//campo de texto
 
 class CustomTextField extends StatelessWidget {
   const CustomTextField({
@@ -82,12 +137,13 @@ class CustomTextField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       validator: validator,
-      decoration: InputDecoration(labelText: labelText, hintText: hintText),
+      decoration: InputDecoration(
+        labelText: labelText,
+        hintText: hintText,
+      ),
     );
   }
 }
-
-//campo de texto com ícone
 
 class CustomIconTextField extends StatelessWidget {
   const CustomIconTextField({
@@ -115,15 +171,6 @@ class CustomIconTextField extends StatelessWidget {
         hintText: hintText,
         prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
         border: const OutlineInputBorder(),
-
-        errorStyle: const TextStyle(
-          color: Colors.red,
-          fontWeight: FontWeight.bold,
-        ),
-
-        errorBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.red, width: 1),
-        ),
       ),
     );
   }
