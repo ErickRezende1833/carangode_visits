@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../services/auth_service.dart';
 import 'loginView.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
@@ -12,28 +12,18 @@ class CustomBottomNavigationBar extends StatelessWidget {
   });
 
   Future<void> _acessarBase(BuildContext context) async {
-    final usuario = FirebaseAuth.instance.currentUser;
+    final authService = AuthService();
 
-    if (usuario != null) {
-      final doc = await FirebaseFirestore.instance
-          .collection('usuarios')
-          .doc(usuario.uid)
-          .get();
+    final ehGerente = await authService.usuarioAtualEhGerente();
 
-      if (doc.exists) {
-        final dados = doc.data()!;
-        final tipo = dados['tipo'];
-
-        if (tipo == 'gerente') {
-          if (context.mounted) {
-            Navigator.pushReplacementNamed(
-              context,
-              '/gerente',
-            );
-          }
-          return;
-        }
+    if (ehGerente) {
+      if (context.mounted) {
+        Navigator.pushReplacementNamed(
+          context,
+          '/gerente',
+        );
       }
+      return;
     }
 
     if (!context.mounted) return;
@@ -65,6 +55,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
           Theme.of(context).colorScheme.onPrimary.withOpacity(.60),
       selectedFontSize: 14,
       unselectedFontSize: 14,
+
       onTap: (index) async {
         if (index == currentIndex) return;
 
@@ -79,6 +70,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
           await _acessarBase(context);
         }
       },
+
       items: const [
         BottomNavigationBarItem(
           label: 'Campo',
@@ -109,7 +101,10 @@ class CustomElevatedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
       onPressed: onPressed,
-      icon: Icon(icon, size: 18),
+      icon: Icon(
+        icon,
+        size: 18,
+      ),
       label: Text(label),
       style: ElevatedButton.styleFrom(
         fixedSize: const Size.fromHeight(48),
@@ -171,6 +166,18 @@ class CustomIconTextField extends StatelessWidget {
         hintText: hintText,
         prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
         border: const OutlineInputBorder(),
+
+        errorStyle: const TextStyle(
+          color: Colors.red,
+          fontWeight: FontWeight.bold,
+        ),
+
+        errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.red,
+            width: 1,
+          ),
+        ),
       ),
     );
   }
