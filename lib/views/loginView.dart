@@ -4,7 +4,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginView extends StatefulWidget {
-  const LoginView({super.key});
+  final bool apenasGerente;
+  final Future<void> Function()? onSucesso;
+
+  const LoginView({
+    super.key,
+    this.apenasGerente = false,
+    this.onSucesso,
+  });
 
   @override
   State<LoginView> createState() => _LoginViewState();
@@ -13,7 +20,6 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   final _emailController = TextEditingController();
   final _senhaController = TextEditingController();
-
   final _formKey = GlobalKey<FormState>();
 
   bool _obscureSenha = true;
@@ -24,26 +30,6 @@ class _LoginViewState extends State<LoginView> {
     _emailController.dispose();
     _senhaController.dispose();
     super.dispose();
-  }
-
-  Widget _secao(String titulo) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            titulo,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.blueGrey,
-            ),
-          ),
-          const Divider(),
-        ],
-      ),
-    );
   }
 
   Future<void> _fazerLogin() async {
@@ -74,20 +60,27 @@ class _LoginViewState extends State<LoginView> {
       final dados = doc.data()!;
       final tipo = dados['tipo'];
 
-      if (!mounted) return;
+      if (widget.apenasGerente && tipo != 'gerente') {
+        await FirebaseAuth.instance.signOut();
 
-      if (tipo == 'gerente') {
-        Navigator.pushReplacementNamed(
-          context,
-          '/gerente',
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Acesso permitido apenas para gerente.',
+            ),
+          ),
         );
-      } else if (tipo == 'entrevistador') {
-        Navigator.pushReplacementNamed(
-          context,
-          '/campo',
-        );
+
+        return;
+      }
+
+      if (widget.onSucesso != null) {
+        await widget.onSucesso!();
       } else {
-        throw Exception('Tipo de usuário inválido');
+        if (!mounted) return;
+        Navigator.pop(context);
       }
     } catch (e) {
       if (!mounted) return;
@@ -110,7 +103,11 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: Text(
+          widget.apenasGerente
+              ? 'Acesso Gerente'
+              : 'Autenticação',
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -142,10 +139,12 @@ class _LoginViewState extends State<LoginView> {
 
               const SizedBox(height: 4),
 
-              const Text(
-                'Entre na sua conta',
+              Text(
+                widget.apenasGerente
+                    ? 'Login do gerente'
+                    : 'Autentique para continuar',
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   color: Colors.grey,
                 ),
@@ -162,9 +161,11 @@ class _LoginViewState extends State<LoginView> {
                   if (v == null || v.isEmpty) {
                     return 'Obrigatório';
                   }
+
                   if (!v.contains('@')) {
                     return 'E-mail inválido';
                   }
+
                   return null;
                 },
               ),
@@ -191,21 +192,16 @@ class _LoginViewState extends State<LoginView> {
                     },
                   ),
                   border: const OutlineInputBorder(),
-                  errorStyle: const TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  errorBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.red, width: 1),
-                  ),
                 ),
                 validator: (v) {
                   if (v == null || v.isEmpty) {
                     return 'Obrigatório';
                   }
+
                   if (v.length < 6) {
                     return 'Mínimo 6 caracteres';
                   }
+
                   return null;
                 },
               ),
@@ -228,7 +224,7 @@ class _LoginViewState extends State<LoginView> {
                       label: 'Entrar',
                     ),
 
-              const SizedBox(height: 50),
+              const SizedBox(height: 40),
             ],
           ),
         ),
