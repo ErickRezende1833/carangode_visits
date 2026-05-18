@@ -1,8 +1,20 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'widgets.dart';
 
 class HomeGerenteView extends StatelessWidget {
   const HomeGerenteView({super.key});
+
+  Future<void> _sair(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+
+    if (!context.mounted) return;
+
+    Navigator.pushReplacementNamed(
+      context,
+      '/campo',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,13 +23,13 @@ class HomeGerenteView extends StatelessWidget {
         title: const Text('Painel da Gerente'),
         centerTitle: true,
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(16),
 
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-
             const SizedBox(height: 20),
 
             const Icon(
@@ -77,20 +89,17 @@ class HomeGerenteView extends StatelessWidget {
             const SizedBox(height: 20),
 
             CustomElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  '/campo',
-                );
-              },
+              onPressed: () => _sair(context),
               icon: Icons.logout,
               label: 'Sair',
             ),
-
           ],
         ),
       ),
-      bottomNavigationBar: const CustomBottomNavigationBar(currentIndex: 1),
+
+      bottomNavigationBar: const CustomBottomNavigationBar(
+        currentIndex: 1,
+      ),
     );
   }
 }
