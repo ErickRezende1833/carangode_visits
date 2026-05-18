@@ -25,7 +25,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
         if (index == 0) {
           Navigator.pushReplacementNamed(context, '/campo');
         } else if (index == 1) {
-          Navigator.pushReplacementNamed(context, '/');
+          Navigator.pushReplacementNamed(context, '/gerente');
         }
       },
       items: [

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'widgets.dart';
 
 class HomeGerenteView extends StatelessWidget {
   const HomeGerenteView({super.key});
@@ -49,57 +50,47 @@ class HomeGerenteView extends StatelessWidget {
 
             const SizedBox(height: 40),
 
-            ElevatedButton.icon(
+            CustomElevatedButton(
               onPressed: () {
                 Navigator.pushNamed(
                   context,
                   '/cadastro-entrevistador',
                 );
               },
-
-              icon: const Icon(Icons.person_add),
-
-              label: const Text(
-                'Cadastrar Entrevistador',
-              ),
+              icon: Icons.person_add,
+              label: 'Cadastrar Entrevistador',
             ),
 
             const SizedBox(height: 20),
 
-            ElevatedButton.icon(
+            CustomElevatedButton(
               onPressed: () {
                 Navigator.pushNamed(
                   context,
                   '/consulta-visitas',
                 );
               },
-
-              icon: const Icon(Icons.search),
-
-              label: const Text(
-                'Consultar Visitas',
-              ),
+              icon: Icons.search,
+              label: 'Consultar Visitas',
             ),
 
             const SizedBox(height: 20),
 
-            ElevatedButton.icon(
+            CustomElevatedButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(
+                Navigator.pushNamed(
                   context,
-                  '/login',
+                  '/campo',
                 );
               },
-
-              icon: const Icon(Icons.logout),
-
-              label: const Text(
-                'Sair',
-              ),
+              icon: Icons.logout,
+              label: 'Sair',
             ),
+
           ],
         ),
       ),
+      bottomNavigationBar: const CustomBottomNavigationBar(currentIndex: 1),
     );
   }
 }
