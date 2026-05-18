@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       
-      initialRoute: '/campo',
+      initialRoute: '/login',
         routes: {
           '/login': (context) => LoginView(),
           '/campo': (context) => const HomeCampoView(),
