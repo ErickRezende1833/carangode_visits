@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../viewModels/consultaVisitasViewModel.dart';
+import 'detalheVisitaView.dart';
+
 class ConsultaVisitasView extends StatefulWidget {
   const ConsultaVisitasView({super.key});
 
@@ -12,56 +15,21 @@ class ConsultaVisitasView extends StatefulWidget {
 class _ConsultaVisitasViewState
     extends State<ConsultaVisitasView> {
 
-  List<QueryDocumentSnapshot> familias = [];
-  List<QueryDocumentSnapshot> familiasFiltradas = [];
-
-  bool loading = true;
+  final ConsultaVisitasViewModel _viewModel =
+      ConsultaVisitasViewModel();
 
   final buscaController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    carregarFamilias();
-  }
 
-  Future<void> carregarFamilias() async {
-    try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection('familias')
-          .get();
+    _viewModel.carregarFamilias();
 
-      setState(() {
-        familias = snapshot.docs;
-        familiasFiltradas = snapshot.docs;
-        loading = false;
-      });
-
-    } catch (e) {
-      setState(() {
-        loading = false;
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Erro ao carregar visitas: $e'),
-        ),
-      );
-    }
-  }
-
-  void filtrar(String texto) {
-    setState(() {
-      familiasFiltradas = familias.where((doc) {
-        final nome =
-            doc['nomeTitular']
-                .toString()
-                .toLowerCase();
-
-        return nome.contains(
-          texto.toLowerCase(),
-        );
-      }).toList();
+    _viewModel.addListener(() {
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
@@ -88,7 +56,7 @@ class _ConsultaVisitasViewState
 
             TextField(
               controller: buscaController,
-              onChanged: filtrar,
+              onChanged: _viewModel.filtrar,
 
               decoration: const InputDecoration(
                 labelText: 'Buscar por nome',
@@ -100,22 +68,23 @@ class _ConsultaVisitasViewState
             const SizedBox(height: 20),
 
             Expanded(
-              child: loading
+              child: _viewModel.loading
                   ? const Center(
                       child: CircularProgressIndicator(),
                     )
-                  : familiasFiltradas.isEmpty
+                  : _viewModel.familiasFiltradas.isEmpty
                       ? const Center(
                           child: Text(
                             'Nenhuma visita encontrada',
                           ),
                         )
                       : ListView.builder(
-                          itemCount: familiasFiltradas.length,
+                          itemCount:
+                              _viewModel.familiasFiltradas.length,
 
                           itemBuilder: (context, index) {
                             final familia =
-                                familiasFiltradas[index];
+                                _viewModel.familiasFiltradas[index];
 
                             return Card(
                               child: ListTile(
@@ -130,6 +99,22 @@ class _ConsultaVisitasViewState
                                 subtitle: Text(
                                   familia['comunidade'] ?? '',
                                 ),
+
+                                trailing: const Icon(
+                                  Icons.arrow_forward_ios,
+                                ),
+
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          DetalheVisitaView(
+                                        familia: familia,
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
                             );
                           },
