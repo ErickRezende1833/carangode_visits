@@ -9,6 +9,7 @@ import 'views/formView.dart';
 import 'views/cadastroEntrevistadorView.dart';
 import 'views/homeGerenteView.dart';
 import 'views/consultaVisitasView.dart';
+import 'views/detalheVisitaView.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
             const CadastroEntrevistadorView(),
         '/gerente': (context) => const HomeGerenteView(),
         '/consulta-visitas': (context) => const ConsultaVisitasView(),
+        '/detalhe-visita': (context) => throw UnimplementedError(),
       },
     );
   }
