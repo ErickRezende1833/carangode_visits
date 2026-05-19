@@ -5,11 +5,13 @@ import '../viewModels/loginViewModel.dart';
 
 class LoginView extends StatefulWidget {
   final bool apenasGerente;
+  final bool fecharAoSucesso;
   final Future<void> Function()? onSucesso;
 
   const LoginView({
     super.key,
     this.apenasGerente = false,
+    this.fecharAoSucesso = false,
     this.onSucesso,
   });
 
@@ -65,10 +67,13 @@ class _LoginViewState extends State<LoginView> {
 
       if (widget.onSucesso != null) {
         await widget.onSucesso!();
-      } else {
+      }
+
+      if (widget.fecharAoSucesso) {
         if (!mounted) return;
         Navigator.pop(context);
       }
+
     } catch (e) {
       if (!mounted) return;
 
@@ -97,10 +102,13 @@ class _LoginViewState extends State<LoginView> {
         ),
         centerTitle: true,
       ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
+
         child: Form(
           key: _formKey,
+
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
