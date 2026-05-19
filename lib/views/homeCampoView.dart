@@ -33,6 +33,7 @@ class _HomeCampoViewState extends State<HomeCampoView> {
       context,
       MaterialPageRoute(
         builder: (_) => LoginView(
+          fecharAoSucesso: true,
           onSucesso: () async {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
