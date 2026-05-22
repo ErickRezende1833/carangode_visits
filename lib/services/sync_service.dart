@@ -17,7 +17,6 @@ class SyncService {
     try {
       final db = await DatabaseHelper.instance.database;
 
-      // 🔍 pega só os não sincronizados
       final result = await db.query(
         'familias',
         where: 'synced = ?',
@@ -35,7 +34,6 @@ class SyncService {
 
           if (familia.id == null) continue;
 
-          // ☁ envia para Firestore
           await FirebaseFirestore.instance
               .collection('familias')
               .doc(familia.id.toString())
@@ -62,7 +60,6 @@ class SyncService {
             'timestamp': FieldValue.serverTimestamp(),
           });
 
-          // 💾 marca como sincronizado no SQLite
           await db.update(
             'familias',
             {'synced': 1},

@@ -10,7 +10,7 @@ class NetworkService {
   void startListening() {
     _subscription = _connectivity.onConnectivityChanged.listen((result) {
       if (result != ConnectivityResult.none) {
-        print("🌐 Internet voltou → sincronizando...");
+        print("Internet voltou, sincronizando...");
         SyncService().syncFamilias();
       }
     });

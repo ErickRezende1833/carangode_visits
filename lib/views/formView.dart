@@ -200,21 +200,8 @@ class _FormViewState extends State<FormView> {
                 onChanged: (val) => setState(() => _tipoAcesso = val),
               ),
 
-              // 3. Composição Familiar (Representação simplificada)
-              _secao('3. Composição Familiar'),
-              const Text(
-                'A lista de membros será gerenciada em um módulo específico.',
-                style: TextStyle(fontStyle: FontStyle.italic),
-              ),
-              const SizedBox(height: 10),
-              ElevatedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.add),
-                label: const Text('Adicionar Membro'),
-              ),
-
-              // 4. Situação Socioeconómica
-              _secao('4. Situação Socioeconómica'),
+              // 3. Situação Socioeconómica
+              _secao('3. Situação Socioeconómica'),
               CustomIconTextField(
                 controller: _rendaController,
                 labelText: 'Renda Mensal Bruta',
@@ -236,8 +223,8 @@ class _FormViewState extends State<FormView> {
                 prefixIcon: Icons.description,
               ),
 
-              // 5. Diagnóstico da Habitação Atual
-              _secao('5. Diagnóstico da Habitação'),
+              // 4. Diagnóstico da Habitação Atual
+              _secao('4. Diagnóstico da Habitação'),
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(
                   labelText: 'Tipo de Construção',
@@ -295,34 +282,6 @@ class _FormViewState extends State<FormView> {
                 value: _possuiEnergiaEletrica,
                 onChanged: (bool val) =>
                     setState(() => _possuiEnergiaEletrica = val),
-              ),
-
-              // 6. Mídia
-              _secao('6. Mídia e Documentação'),
-              Wrap(
-                spacing: 10,
-                children: [
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.camera_alt),
-                    tooltip: 'Foto Fachada',
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.camera_indoor),
-                    tooltip: 'Foto Interior',
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.document_scanner),
-                    tooltip: 'Documentos',
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.draw),
-                    tooltip: 'Assinatura',
-                  ),
-                ],
               ),
 
               const SizedBox(height: 32),
