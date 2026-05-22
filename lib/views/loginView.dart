@@ -114,10 +114,9 @@ class _LoginViewState extends State<LoginView> {
             children: [
               const SizedBox(height: 20),
 
-              const Icon(
-                Icons.directions_car_rounded,
-                size: 80,
-                color: Colors.blueGrey,
+              Image.asset(
+                'assets/LogoAzul.png',
+                height: 80,
               ),
 
               const SizedBox(height: 8),
