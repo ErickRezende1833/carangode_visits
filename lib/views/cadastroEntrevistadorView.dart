@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/usuario_service.dart';
+import 'widgets.dart';
 
 class CadastroEntrevistadorView extends StatefulWidget {
   const CadastroEntrevistadorView({super.key});
@@ -96,30 +97,26 @@ class _CadastroEntrevistadorViewState
         child: Column(
           children: [
 
-            TextField(
+            CustomIconTextField(
               controller: nomeController,
-              decoration: const InputDecoration(
-                labelText: 'Nome',
-              ),
+              labelText: 'Nome',
+              hintText: 'Digite o nome',
             ),
 
             const SizedBox(height: 16),
 
-            TextField(
+            CustomIconTextField(
               controller: emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-              ),
+              labelText: 'Email',
+              hintText: 'Digite o email',
             ),
 
             const SizedBox(height: 16),
 
-            TextField(
+            CustomIconTextField(
               controller: senhaController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Senha',
-              ),
+              labelText: 'Senha',
+              hintText: 'Digite a senha',
             ),
 
             const SizedBox(height: 24),

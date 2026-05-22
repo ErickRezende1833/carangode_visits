@@ -66,7 +66,10 @@ class _HomeCampoViewState extends State<HomeCampoView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('LOGO'),
+        title: Image.asset(
+          'assets/Logo.png',
+          height: 40,
+        ),
         backgroundColor: Theme.of(context).colorScheme.primary,
         centerTitle: true,
       ),
